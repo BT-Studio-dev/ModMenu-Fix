@@ -75,8 +75,17 @@ jobs:
           javap -p -classpath "$MM" com.terraformersmc.modmenu.config.ModMenuConfig | grep -F 'MODIFY_TITLE_SCREEN' \
             || { echo '::error::ModMenuConfig#MODIFY_TITLE_SCREEN not found'; exit 1; }
 
+          javap -p -classpath "$MM" com.terraformersmc.modmenu.config.ModMenuConfig | grep -F 'GAME_MENU_BUTTON_STYLE' \
+            || { echo '::error::ModMenuConfig#GAME_MENU_BUTTON_STYLE not found'; exit 1; }
+
+          javap -p -classpath "$MM" com.terraformersmc.modmenu.config.ModMenuConfig | grep -F 'MODIFY_GAME_MENU' \
+            || { echo '::error::ModMenuConfig#MODIFY_GAME_MENU not found'; exit 1; }
+
           javap -p -classpath "$MM" 'com.terraformersmc.modmenu.config.ModMenuConfig$TitleMenuButtonStyle' | grep -F 'CLASSIC' \
             || { echo '::error::TitleMenuButtonStyle#CLASSIC not found'; exit 1; }
+
+          javap -p -classpath "$MM" 'com.terraformersmc.modmenu.config.ModMenuConfig$GameMenuButtonStyle' | grep -F 'INSERT' \
+            || { echo '::error::GameMenuButtonStyle#INSERT not found'; exit 1; }
 
           javap -p -classpath "$MM" com.terraformersmc.modmenu.config.option.EnumConfigOption | grep -F 'setValue' \
             || { echo '::error::EnumConfigOption#setValue not found'; exit 1; }

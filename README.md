@@ -48,13 +48,15 @@ hidden or miscounted.
 
 Nothing is bundled: Mod Menu still has to be installed, and this mod only patches it in memory.
 
-## Title screen button: the 26.2 look on 26.3
+## Mods GUI entry: title screen and pause menu
 
-Minecraft 26.3 moved the title screen's icon row, so Mod Menu's default
-`mods_button_style = icon` now hides the Mods entry in a row of 20×20 icons instead of the
-labelled button people know from 26.2:
+Minecraft 26.3 moved its menu icon rows, so Mod Menu's defaults (`icon` on the title screen,
+`icon` in the pause menu) turn the Mods entry into a 20×20 icon instead of the labelled button
+people know from 26.2. Both places can be switched back, independently:
 
-| `title_screen_button` | Title screen |
+**Title screen — `title_screen_button`**
+
+| Value | Title screen |
 | --- | --- |
 | `classic` *(default)* | full-width **Mods** button in the menu column, under Minecraft Realms — the 26.2 look |
 | `icon` | 20×20 Mods icon inside the 26.3 icon row (Mod Menu's own default) |
@@ -62,18 +64,29 @@ labelled button people know from 26.2:
 | `replace_realms` | Mods button in place of the Minecraft Realms row |
 | `keep` | do not touch Mod Menu's `mods_button_style` at all |
 
+**Pause menu — `game_menu_button`**
+
+| Value | In-game pause menu |
+| --- | --- |
+| `insert` *(default)* | full-width **Mods** button in the game menu grid |
+| `icon` | 20×20 Mods icon in the pause menu's icon row (Mod Menu's own default) |
+| `keep` | do not touch Mod Menu's `game_menu_button_style` at all |
+
+Both accept Mod Menu's own aliases (`below_bugs` for `insert`, `replace` / `replace_bugs` for
+`icon`), because those are the serialized names older config files use.
+
 This does not reimplement any layout: it selects the style inside Mod Menu's own config right
 after Mod Menu has loaded it, before the title screen is built, so Mod Menu places the button
-itself. If `modify_title_screen` is off in `config/modmenu.json`, it is switched on when a
-style is requested (otherwise no button would be drawn at all). Picking a style in Mod Menu's
-options screen afterwards simply overwrites this.
+itself. If `modify_title_screen` / `modify_game_menu` are off in `config/modmenu.json`, they are
+switched on when a style is requested (otherwise no button would be drawn at all). Picking a
+style in Mod Menu's options screen afterwards simply overwrites this.
 
 ## Installation
 
 1. Install [Fabric Loader](https://fabricmc.net/use/) 0.20.1+ for Minecraft 26.3.
 2. Install Mod Menu 21.0.0 (and Fabric API, which Mod Menu needs).
-3. Drop `modmenufix-1.1.0.jar` into `.minecraft/mods`.
-4. Launch the game. The log line `Mod Menu Fix 1.1.0 for Minecraft 26.3 ready` confirms it is active.
+3. Drop `modmenufix-1.2.0.jar` into `.minecraft/mods`.
+4. Launch the game. The log line `Mod Menu Fix 1.2.0 for Minecraft 26.3 ready` confirms it is active.
 
 ## Configuration
 
@@ -82,6 +95,7 @@ options screen afterwards simply overwrites this.
 ```json
 {
   "title_screen_button": "classic",
+  "game_menu_button": "insert",
   "hide_missing_parent_mods": true,
   "count_orphaned_children_as_root_mods": true,
   "log_missing_parents": true,
@@ -92,6 +106,7 @@ options screen afterwards simply overwrites this.
 | Key | Default | Meaning |
 | --- | --- | --- |
 | `title_screen_button` | `"classic"` | `classic` / `icon` / `shrink` / `replace_realms` / `keep` — see above. |
+| `game_menu_button` | `"insert"` | `insert` / `icon` / `keep` — the pause menu entry, see above. |
 | `hide_missing_parent_mods` | `true` | Remove phantom parent entries for mods that are not installed. `false` restores stock Mod Menu behaviour. |
 | `count_orphaned_children_as_root_mods` | `true` | Count the surviving children of a missing parent as top-level mods. |
 | `log_missing_parents` | `true` | Log one line per missing parent. |
@@ -104,10 +119,10 @@ The project uses the non-remapping Loom plugin, because Minecraft 26.x ships uno
 
 ```bash
 ./gradlew build
-# -> build/libs/modmenufix-1.1.0.jar
+# -> build/libs/modmenufix-1.2.0.jar
 ```
 
-The built jar is committed to `dist/modmenufix-1.1.0.jar` so it can be downloaded without
+The built jar is committed to `dist/modmenufix-1.2.0.jar` so it can be downloaded without
 running a build.
 
 CI (`.github/workflows/build.yml`) runs on every push and:
@@ -116,8 +131,9 @@ CI (`.github/workflows/build.yml`) runs on every push and:
    dummy `Mod` instances),
 2. checks with `javap` that everything it patches still exists in Mod Menu 21.0.0
    (`ModMenu#onInitializeClient`, the `setChildHasUpdate()` call inside
-   `FabricMod#setUpdateInfo`, `ModMenuConfig#MODS_BUTTON_STYLE`, `MODIFY_TITLE_SCREEN`,
-   `TitleMenuButtonStyle#CLASSIC` and the option `setValue` methods),
+   `FabricMod#setUpdateInfo`, `ModMenuConfig#MODS_BUTTON_STYLE`, `GAME_MENU_BUTTON_STYLE`,
+   `MODIFY_TITLE_SCREEN`, `MODIFY_GAME_MENU`, `TitleMenuButtonStyle#CLASSIC`,
+   `GameMenuButtonStyle#INSERT` and the option `setValue` methods),
 3. publishes the jar to `dist/`.
 
 ## Layout
@@ -127,7 +143,7 @@ src/main/java/dev/btstudio/modmenufix/
 ├── ModMenuFix.java        client entrypoint, logs the config in use
 ├── FixConfig.java         config/modmenufix.json
 ├── MissingParents.java    the fix: strip phantom parents, re-root their children
-├── TitleScreenButton.java title screen Mods entry: classic / icon / shrink / replace_realms
+├── MenuButtons.java       title screen + pause menu Mods entry (classic / insert / icon / keep)
 └── mixin/
     ├── ModMenuMixin.java  runs the fix at the tail of ModMenu#onInitializeClient
     └── FabricModMixin.java guards setUpdateInfo against a missing parent

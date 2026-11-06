@@ -18,10 +18,11 @@ public final class ModMenuFix implements ClientModInitializer {
 				.orElse("unknown");
 
 		LOGGER.info(
-				"Mod Menu Fix {} for Minecraft 26.3 ready (hide missing parents: {}, title screen button: {}, guard update checker: {})",
+				"Mod Menu Fix {} for Minecraft 26.3 ready (hide missing parents: {}, title screen button: {}, pause menu button: {}, guard update checker: {})",
 				version,
 				config.hideMissingParentMods,
 				config.titleScreenButton,
+				config.gameMenuButton,
 				config.guardUpdateCheckerAgainstMissingParents
 		);
 	}

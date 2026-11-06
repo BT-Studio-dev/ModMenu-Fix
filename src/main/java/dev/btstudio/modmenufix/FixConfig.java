@@ -55,6 +55,14 @@ public final class FixConfig {
 	public String titleScreenButton = "classic";
 
 	/**
+	 * Which in-game (pause menu) Mods entry to use: {@code insert} (full-width "Mods" button in
+	 * the game menu), {@code icon} (20x20 icon in the pause menu icon row, Mod Menu's default),
+	 * or {@code keep}.
+	 */
+	@SerializedName("game_menu_button")
+	public String gameMenuButton = "insert";
+
+	/**
 	 * Guard the update checker against {@code ModMenu.MODS.get(parent)} returning null.
 	 * Keep this on unless you want the original crash back.
 	 */

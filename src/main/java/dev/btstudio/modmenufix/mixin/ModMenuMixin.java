@@ -3,7 +3,7 @@ package dev.btstudio.modmenufix.mixin;
 import com.terraformersmc.modmenu.ModMenu;
 import dev.btstudio.modmenufix.FixConfig;
 import dev.btstudio.modmenufix.MissingParents;
-import dev.btstudio.modmenufix.TitleScreenButton;
+import dev.btstudio.modmenufix.MenuButtons;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,9 +19,9 @@ public abstract class ModMenuMixin {
 	private void modmenufix$stripMissingParents(CallbackInfo ci) {
 		FixConfig config = FixConfig.get();
 
-		// Runs here too: Mod Menu has loaded its config by now, but the title screen has not
-		// been built yet, so the style below is the one that gets rendered.
-		TitleScreenButton.apply(config);
+		// Runs here too: Mod Menu has loaded its config by now, but no screen has been built
+		// yet, so the styles chosen here are the ones that get rendered.
+		MenuButtons.apply(config);
 
 		if (!config.hideMissingParentMods) {
 			return;
