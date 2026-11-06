@@ -37,6 +37,38 @@ jobs:
           chmod +x ./gradlew
           ./gradlew build --stacktrace
 
+      - name: Verify client-only environment
+        run: |
+          python3 - <<'PY'
+          import json, sys
+
+          fabric = json.load(open('src/main/resources/fabric.mod.json'))
+          mixins = json.load(open('src/main/resources/modmenufix.mixins.json'))
+
+          environment = fabric.get('environment')
+          entrypoints = list(fabric.get('entrypoints', {}))
+          sections = [k for k in ('mixins', 'client', 'server') if k in mixins]
+
+          print('fabric.mod.json environment:', environment)
+          print('entrypoints:', entrypoints)
+          print('mixin sections:', sections, '->', mixins.get('client'))
+
+          problems = []
+          if environment != 'client':
+              problems.append("environment must be 'client'")
+          if entrypoints != ['client']:
+              problems.append('only a client entrypoint is allowed')
+          if 'mixins' in mixins or 'server' in mixins or not mixins.get('client'):
+              problems.append('every mixin must live in the client section')
+
+          if problems:
+              print('::error::The mod is no longer client-only (' + '; '.join(problems) + '). '
+                    'The Modrinth version environment says "Client-side only", so this would be wrong metadata.')
+              sys.exit(1)
+
+          print('client-only environment confirmed')
+          PY
+
       - name: Verify jar
         run: |
           set -euo pipefail

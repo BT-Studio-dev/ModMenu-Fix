@@ -34,6 +34,10 @@ is compatible with vanilla servers." Do not pick "Client and server": the jar de
 `client` section of `modmenufix.mixins.json`, so Fabric never loads it on a dedicated server.
 "Ignore missing"/optional-server options do not apply.
 
+CI enforces this: the `Verify client-only environment` step fails the build if `environment`,
+the entrypoints, or the mixin sections ever stop being client-only, so the jar can't drift away
+from the environment answer given here.
+
 Changelog: paste the release notes from
 <https://github.com/BT-Studio-dev/ModMenu-Fix/releases/tag/v1.2.0>.
 
