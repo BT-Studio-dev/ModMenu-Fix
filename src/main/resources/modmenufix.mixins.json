@@ -1,0 +1,13 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "dev.btstudio.modmenufix.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"client": [
+		"FabricModMixin",
+		"ModMenuMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

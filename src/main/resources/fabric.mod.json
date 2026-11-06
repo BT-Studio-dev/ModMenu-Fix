@@ -1,0 +1,32 @@
+{
+	"schemaVersion": 1,
+	"id": "modmenufix",
+	"version": "${version}",
+	"name": "Mod Menu Fix",
+	"description": "Fixes Mod Menu on Minecraft 26.3: a parent entry that stands for a mod which is not installed is no longer listed or counted as a mod, its installed children stay visible at the top level, and the update checker no longer crashes with a null parent.",
+	"authors":	[
+		"BT-Studio"
+	],
+	"contact": {
+		"homepage": "https://github.com/BT-Studio-dev/Mod-Menu-Fix",
+		"sources": "https://github.com/BT-Studio-dev/Mod-Menu-Fix",
+		"issues": "https://github.com/BT-Studio-dev/Mod-Menu-Fix/issues"
+	},
+	"license": "MIT",
+	"icon": "assets/modmenufix/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"dev.btstudio.modmenufix.ModMenuFix"
+		]
+	},
+	"mixins": [
+		"modmenufix.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.19.0",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"modmenu": ">=21.0.0 <22.0.0"
+	}
+}
