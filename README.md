@@ -111,9 +111,14 @@ src/main/java/dev/btstudio/modmenufix/
 
 ## Artwork
 
+* `art/icon-1024.png` — master icon, transparent rounded square
+* `art/icon-512.png` — store listing / upload size (Modrinth, CurseForge, GitHub)
+* `src/main/resources/assets/modmenufix/icon.png` — 128×128 icon shipped inside the jar
 * `art/banner-mod-menu-fix.png` — full resolution banner (1472×704), in the Mod Menu house style
 * `art/banner-mod-menu-fix-1280x640.png` — social preview / README size
-* `src/main/resources/assets/modmenufix/icon.png` — the 128×128 mod icon
+
+The icon follows the Mod Menu artwork: blue rounded tile, list rows, one dashed ghost row
+struck out (the missing mod that gets removed), and a wrench badge for the fix.
 
 ## License
 
