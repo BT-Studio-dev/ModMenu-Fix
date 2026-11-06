@@ -1,61 +1,65 @@
-# Mod Menu Fix
+**Mod Menu Fix** is an unofficial, client-side patch for **Mod Menu on Minecraft 26.3**. It fixes what Mod Menu does when a mod names a parent that is not installed — phantom entries, wrong mod counts, a crashing update checker — and it puts the full-width Mods button back on the title screen and in the pause menu.
 
-A small client-side patch for [Mod Menu](https://modrinth.com/mod/modmenu) on **Minecraft 26.3**. It fixes what happens when a mod declares a parent that is not installed, and puts the Mods button back where you expect it.
+---
 
-Nothing is bundled or shaded: Mod Menu stays a normal dependency and is patched in memory. No extra libraries, no config screen of its own.
+## Why this exists
 
-## What was wrong
+Plenty of 26.3 modpacks contain add-ons whose main mod is missing — a child mod kept, its parent removed, or a parent id that only exists on another loader. Mod Menu 21 reacts by inventing a stand-in entry for that parent and treating it like a real, installed mod. The result is a mod list that lies to you:
 
-A mod can name a parent in its `fabric.mod.json`:
+- a phantom row with no version, no description and a placeholder icon, standing for a mod you do not have;
+- a **"N mods loaded"** counter on the title screen that is higher than the number of mods the Mods screen lists, because the phantom is counted;
+- add-ons of that missing parent are **never counted at all**, since Mod Menu only counts them under their parent;
+- adding the missing mod id to `hidden_mods` hides the add-ons you *do* have, because children are only listed underneath their parent;
+- a `NullPointerException` in the update checker, thrown from `FabricMod#setUpdateInfo` when one of those add-ons has an update.
 
-```json
-"custom": { "modmenu": { "parent": "some-other-mod" } }
-```
+Mod Menu Fix cleans that up after Mod Menu has finished loading, in memory, and leaves everything else exactly as it is.
 
-That is how Mod Menu groups add-ons under their main mod. When the parent is **not installed**, Mod Menu 21 invents a stand-in entry for it and treats it like an installed mod:
+## What it does
 
-- a phantom row with no version, no description and a placeholder icon appears in the mod list;
-- the phantom is counted, so the "N mods loaded" counter on the title screen is higher than what the Mods screen lists;
-- the add-ons that *are* installed are not counted at all;
-- putting the missing mod id in `hidden_mods` hides the installed add-ons too, because children are only listed under their parent;
-- the update checker throws a `NullPointerException` when a mod with a missing parent has an update.
+**Missing mods stop being mods.** Every parent entry that does not correspond to an installed mod is removed from the mod list and from the mod counter. Nothing you actually have is touched.
 
-## What this mod changes
+**Installed add-ons stay visible.** The children of a removed parent become ordinary top-level entries and are counted there — so a broken parent can no longer make a working mod disappear from your list.
 
-- **Missing mods stop being listed.** Phantom parent entries are removed from the mod list and from the mod counter.
-- **Installed add-ons stay visible.** The children of a missing parent become normal top-level mods and are counted there — nothing you actually have disappears.
-- **No update-checker crash.** The unguarded `setChildHasUpdate()` call on a missing parent is skipped, with one warning line in the log naming the mod id.
-- **The Mods button comes back.** Minecraft 26.3 moved its menu icon rows, so Mod Menu now defaults to a 20×20 icon. This restores the full-width **Mods** button on the title screen and in the pause menu.
+**The update checker stops crashing.** The unguarded `setChildHasUpdate()` call on a missing parent is skipped, with a single warning line naming the mod id instead of a stack trace in the log.
+
+**The Mods button comes back.** Minecraft 26.3 moved its menu icon rows, so Mod Menu now defaults to a 20×20 icon. This restores the full-width **Mods** button on the title screen and in the pause menu — the layout people know from 26.2.
 
 ## Menus
 
-| `config/modmenufix.json` | Default | Effect |
-| --- | --- | --- |
-| `title_screen_button` | `classic` | full-width Mods button under Minecraft Realms, the 26.2 look |
-| `game_menu_button` | `insert` | full-width Mods button in the pause menu |
+Both entries are configurable in `config/modmenufix.json`:
 
-Also accepted: `icon` (the 26.3 icon row), `shrink`, `replace_realms`, and `keep` — which leaves Mod Menu's own setting untouched.
+- **`title_screen_button`** — `classic` (default, full-width Mods button under Minecraft Realms), `icon` (the 26.3 icon row), `shrink`, `replace_realms`, or `keep`.
+- **`game_menu_button`** — `insert` (default, full-width Mods button in the pause menu), `icon`, or `keep`.
+
+`keep` leaves Mod Menu's own setting completely untouched. This mod selects a style inside Mod Menu's configuration; it does not reimplement any layout.
+
+## What it does not do
+
+- It does **not** reupload, fork, bundle or patch files of Mod Menu. Mod Menu is a required dependency and stays exactly as you installed it; this project is a separate jar that injects a few methods at runtime.
+- It does not add features to Mod Menu beyond the fixes listed above.
+- It is **not affiliated with Mod Menu or TerraformersMC**. Mod Menu is MIT licensed; this patch is MIT licensed too.
 
 ## Requirements
 
 - Minecraft **26.3**, Fabric Loader **0.20.1+**, Java **25**
-- **Mod Menu 21.0.0** (required, not bundled) and Fabric API, which Mod Menu itself needs
-- Client only — safe to leave out of a server's mod folder
+- **Mod Menu 21.0.0** — required; the mod refuses to load on other versions rather than risk a broken mixin
+- Fabric API, because Mod Menu needs it
+- **Client side only** — it can stay in your client mod folder for servers, since it never touches the game logic servers see
 
 ## Install
 
 1. Install Fabric Loader for 26.3, then Mod Menu 21.0.0 and Fabric API.
 2. Drop `modmenufix-1.2.0.jar` into `.minecraft/mods`.
-3. The log line `Mod Menu Fix 1.2.0 for Minecraft 26.3 ready` confirms it is active.
+3. Launch the game — `Mod Menu Fix 1.2.0 for Minecraft 26.3 ready` in the log means it is working.
 
-Config is created on first launch at `config/modmenufix.json`.
+A config file, `config/modmenufix.json`, is created on first launch with every option and its default.
 
-## Links
+## Size and scope
 
-- Source and issues: [github.com/BT-Studio-dev/ModMenu-Fix](https://github.com/BT-Studio-dev/ModMenu-Fix)
-- Downloads: [Releases](https://github.com/BT-Studio-dev/ModMenu-Fix/releases)
-- Mod Menu: [github.com/TerraformersMC/ModMenu](https://github.com/TerraformersMC/ModMenu) (MIT)
+Nothing is bundled and there are no extra dependencies, so the jar is around 27 KB. One log line per missing parent names the mod ids involved, so a broken modpack is easy to diagnose instead of silently wrong.
 
-## License
+---
 
-MIT. Mod Menu is MIT and © its authors; this project only injects into it.
+**Source and issue tracker:** [github.com/BT-Studio-dev/ModMenu-Fix](https://github.com/BT-Studio-dev/ModMenu-Fix)
+**License:** MIT
+**Built for:** Minecraft 26.3 · Fabric · client only
