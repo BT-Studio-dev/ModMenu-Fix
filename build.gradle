@@ -26,6 +26,23 @@ dependencies {
 	// We patch Mod Menu, so it has to be on the compile classpath. Nothing is bundled:
 	// the user installs Mod Menu themselves and our mixins apply to it at runtime.
 	compileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+	// Tests run the real map surgery against the real Mod Menu Mod interface.
+	testImplementation "org.junit.jupiter:junit-jupiter:${project.junit_version}"
+	testImplementation "com.google.guava:guava:${project.guava_version}"
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+	testImplementation("com.terraformersmc:modmenu:${project.modmenu_version}") {
+		// Only the Mod interface is needed here; do not drag Mod Menu's own dependencies in.
+		transitive = false
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+
+	testLogging {
+		events "passed", "skipped", "failed"
+	}
 }
 
 processResources {
