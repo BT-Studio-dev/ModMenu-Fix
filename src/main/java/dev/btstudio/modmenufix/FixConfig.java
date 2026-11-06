@@ -46,6 +46,15 @@ public final class FixConfig {
 	public boolean logMissingParents = true;
 
 	/**
+	 * Which title screen Mods entry to use: {@code classic} (full-width "Mods" button under
+	 * Minecraft Realms, the 26.2 look), {@code icon} (20x20 icon inside the 26.3 icon row),
+	 * {@code shrink} (half-width next to Realms), {@code replace_realms}, or {@code keep}
+	 * (do not touch Mod Menu's own {@code mods_button_style} setting).
+	 */
+	@SerializedName("title_screen_button")
+	public String titleScreenButton = "classic";
+
+	/**
 	 * Guard the update checker against {@code ModMenu.MODS.get(parent)} returning null.
 	 * Keep this on unless you want the original crash back.
 	 */

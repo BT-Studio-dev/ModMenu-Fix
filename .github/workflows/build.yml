@@ -68,6 +68,22 @@ jobs:
             | grep -F 'com/terraformersmc/modmenu/util/mod/Mod.setChildHasUpdate' \
             || { echo '::error::setChildHasUpdate call not found in FabricMod#setUpdateInfo'; exit 1; }
 
+          echo "== title screen config API still exists in Mod Menu 21.0.0"
+          javap -p -classpath "$MM" com.terraformersmc.modmenu.config.ModMenuConfig | grep -F 'MODS_BUTTON_STYLE' \
+            || { echo '::error::ModMenuConfig#MODS_BUTTON_STYLE not found'; exit 1; }
+
+          javap -p -classpath "$MM" com.terraformersmc.modmenu.config.ModMenuConfig | grep -F 'MODIFY_TITLE_SCREEN' \
+            || { echo '::error::ModMenuConfig#MODIFY_TITLE_SCREEN not found'; exit 1; }
+
+          javap -p -classpath "$MM" 'com.terraformersmc.modmenu.config.ModMenuConfig$TitleMenuButtonStyle' | grep -F 'CLASSIC' \
+            || { echo '::error::TitleMenuButtonStyle#CLASSIC not found'; exit 1; }
+
+          javap -p -classpath "$MM" com.terraformersmc.modmenu.config.option.EnumConfigOption | grep -F 'setValue' \
+            || { echo '::error::EnumConfigOption#setValue not found'; exit 1; }
+
+          javap -p -classpath "$MM" com.terraformersmc.modmenu.config.option.BooleanConfigOption | grep -F 'setValue' \
+            || { echo '::error::BooleanConfigOption#setValue not found'; exit 1; }
+
           echo "all injection points verified"
 
       - name: Upload mod jar

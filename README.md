@@ -48,12 +48,32 @@ hidden or miscounted.
 
 Nothing is bundled: Mod Menu still has to be installed, and this mod only patches it in memory.
 
+## Title screen button: the 26.2 look on 26.3
+
+Minecraft 26.3 moved the title screen's icon row, so Mod Menu's default
+`mods_button_style = icon` now hides the Mods entry in a row of 20×20 icons instead of the
+labelled button people know from 26.2:
+
+| `title_screen_button` | Title screen |
+| --- | --- |
+| `classic` *(default)* | full-width **Mods** button in the menu column, under Minecraft Realms — the 26.2 look |
+| `icon` | 20×20 Mods icon inside the 26.3 icon row (Mod Menu's own default) |
+| `shrink` | half-width Mods button next to Minecraft Realms |
+| `replace_realms` | Mods button in place of the Minecraft Realms row |
+| `keep` | do not touch Mod Menu's `mods_button_style` at all |
+
+This does not reimplement any layout: it selects the style inside Mod Menu's own config right
+after Mod Menu has loaded it, before the title screen is built, so Mod Menu places the button
+itself. If `modify_title_screen` is off in `config/modmenu.json`, it is switched on when a
+style is requested (otherwise no button would be drawn at all). Picking a style in Mod Menu's
+options screen afterwards simply overwrites this.
+
 ## Installation
 
 1. Install [Fabric Loader](https://fabricmc.net/use/) 0.20.1+ for Minecraft 26.3.
 2. Install Mod Menu 21.0.0 (and Fabric API, which Mod Menu needs).
-3. Drop `modmenufix-1.0.0.jar` into `.minecraft/mods`.
-4. Launch the game. The log line `Mod Menu Fix 1.0.0 for Minecraft 26.3 ready` confirms it is active.
+3. Drop `modmenufix-1.1.0.jar` into `.minecraft/mods`.
+4. Launch the game. The log line `Mod Menu Fix 1.1.0 for Minecraft 26.3 ready` confirms it is active.
 
 ## Configuration
 
@@ -61,6 +81,7 @@ Nothing is bundled: Mod Menu still has to be installed, and this mod only patche
 
 ```json
 {
+  "title_screen_button": "classic",
   "hide_missing_parent_mods": true,
   "count_orphaned_children_as_root_mods": true,
   "log_missing_parents": true,
@@ -70,6 +91,7 @@ Nothing is bundled: Mod Menu still has to be installed, and this mod only patche
 
 | Key | Default | Meaning |
 | --- | --- | --- |
+| `title_screen_button` | `"classic"` | `classic` / `icon` / `shrink` / `replace_realms` / `keep` — see above. |
 | `hide_missing_parent_mods` | `true` | Remove phantom parent entries for mods that are not installed. `false` restores stock Mod Menu behaviour. |
 | `count_orphaned_children_as_root_mods` | `true` | Count the surviving children of a missing parent as top-level mods. |
 | `log_missing_parents` | `true` | Log one line per missing parent. |
@@ -82,19 +104,20 @@ The project uses the non-remapping Loom plugin, because Minecraft 26.x ships uno
 
 ```bash
 ./gradlew build
-# -> build/libs/modmenufix-1.0.0.jar
+# -> build/libs/modmenufix-1.1.0.jar
 ```
 
-The built jar is committed to `dist/modmenufix-1.0.0.jar` so it can be downloaded without
+The built jar is committed to `dist/modmenufix-1.1.0.jar` so it can be downloaded without
 running a build.
 
 CI (`.github/workflows/build.yml`) runs on every push and:
 
 1. builds the mod and runs the unit tests in `src/test/java` (the real map surgery against
    dummy `Mod` instances),
-2. checks with `javap` that both injection points still exist in Mod Menu 21.0.0
-   (`ModMenu#onInitializeClient`, and the `setChildHasUpdate()` call inside
-   `FabricMod#setUpdateInfo`),
+2. checks with `javap` that everything it patches still exists in Mod Menu 21.0.0
+   (`ModMenu#onInitializeClient`, the `setChildHasUpdate()` call inside
+   `FabricMod#setUpdateInfo`, `ModMenuConfig#MODS_BUTTON_STYLE`, `MODIFY_TITLE_SCREEN`,
+   `TitleMenuButtonStyle#CLASSIC` and the option `setValue` methods),
 3. publishes the jar to `dist/`.
 
 ## Layout
@@ -104,6 +127,7 @@ src/main/java/dev/btstudio/modmenufix/
 ├── ModMenuFix.java        client entrypoint, logs the config in use
 ├── FixConfig.java         config/modmenufix.json
 ├── MissingParents.java    the fix: strip phantom parents, re-root their children
+├── TitleScreenButton.java title screen Mods entry: classic / icon / shrink / replace_realms
 └── mixin/
     ├── ModMenuMixin.java  runs the fix at the tail of ModMenu#onInitializeClient
     └── FabricModMixin.java guards setUpdateInfo against a missing parent
