@@ -97,7 +97,15 @@ the banner are AI-generated images, and the Java source in this repo was written
 assistance and reviewed by the author. Modrinth's own test is "would you consider AI a
 co-author of the project" — for this project the honest answer is yes.
 
-If the form asks for details, use:
+Sub-checkboxes under it — **tick all three**:
+
+| Type | Applies because |
+| --- | --- |
+| **Code** | the Java sources in `src/main/java` and `src/test/java` were written with AI assistance |
+| **Assets** | `art/icon-1024.png`, `art/icon-512.png`, `art/banner-mod-menu-fix*.png`, and the 128px icon inside the jar are AI-generated images |
+| **Text** | the project description, summary, changelog and README prose on this page were drafted with AI |
+
+Explanation box (optional, but it pre-empts the question):
 
 > Icon and banner artwork are AI-generated. The mod's source was written with AI assistance and
 > reviewed by hand; the AI has no runtime presence in the jar.
