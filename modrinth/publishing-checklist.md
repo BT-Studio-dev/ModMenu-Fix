@@ -54,8 +54,20 @@ the Modrinth text and the GitHub release notes match.
 
 ## Tags
 
-`Tags` → categories: **Utility**, **Client-side** (if offered), and anything about menus/GUI.
-Do not tag it as a library.
+`Tags` → Categories: **Utility** only. Nothing else on that list fits, and a wrong tag is a
+review finding:
+
+| Category | Why not |
+| --- | --- |
+| Library | it is not a library — nothing depends on it |
+| Optimization | no performance claims, it only changes what Mod Menu displays |
+| Management | that is server/admin tooling, not a client GUI |
+| Game Mechanics, Decoration, Equipment, … | gameplay content, which this has none of |
+
+Featured tags: **Utility** (1/3). The counter is a maximum, not a quota — with one category
+selected, one featured tag is all that can be chosen and all that is needed.
+
+Client-side is not a tag; it comes from the version's Environment answer.
 
 ## Links
 
