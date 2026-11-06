@@ -90,13 +90,30 @@ LICENSE, src/, and the v1.2.0 release.
 
 ## Disclosures
 
-Answer honestly, all of these are **no** for this project:
+Exactly **one** toggle on.
 
-- no network requests (the mod never opens a connection — only Mod Menu does, for its own update checker);
-- no data collection or telemetry;
-- no external binaries or tools launched;
-- no world/download behaviour;
-- jar contains only compiled classes from this repo, plus an icon made for it — nothing Mojang-owned, nothing from Mod Menu.
+**ON — Contains AI-generated content.** The icon (`art/icon-1024.png`, `art/icon-512.png`) and
+the banner are AI-generated images, and the Java source in this repo was written with AI
+assistance and reviewed by the author. Modrinth's own test is "would you consider AI a
+co-author of the project" — for this project the honest answer is yes.
+
+If the form asks for details, use:
+
+> Icon and banner artwork are AI-generated. The mod's source was written with AI assistance and
+> reviewed by hand; the AI has no runtime presence in the jar.
+
+**OFF — everything else:**
+
+| Disclosure | Why off |
+| --- | --- |
+| Contains generative AI functionality | no in-game generative features; the AI was used during development, not at runtime |
+| Contains advertisements | nothing is advertised or sponsored |
+| Contains paid features | everything is free |
+| Contains telemetry | the mod makes no network requests at all — Mod Menu's own update checker belongs to Mod Menu, not to this project |
+| Contains derivative content | no Mod Menu code is copied or bundled; this is a separate jar that links against it at runtime (and both are MIT anyway) |
+| Photosensitivity warning | no flashing lights or patterns; it only changes list rows and buttons |
+| External system interactions | it writes its own `config/modmenufix.json` inside the instance and nothing outside the game folder; no processes, no files elsewhere |
+| Archive project | no |
 
 ## Description / Summary / Gallery
 
