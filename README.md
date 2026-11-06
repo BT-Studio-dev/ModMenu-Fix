@@ -1,5 +1,9 @@
 # Mod Menu Fix
 
+<p align="center">
+  <img src="art/banner-mod-menu-fix-1280x640.png" alt="Mod Menu Fix banner" width="100%">
+</p>
+
 A small **Fabric client mod for Minecraft 26.3** that fixes how [Mod Menu](https://github.com/TerraformersMC/ModMenu)
 handles **missing mods** — parent entries for mods that are not installed.
 
@@ -104,6 +108,12 @@ src/main/java/dev/btstudio/modmenufix/
     ├── ModMenuMixin.java  runs the fix at the tail of ModMenu#onInitializeClient
     └── FabricModMixin.java guards setUpdateInfo against a missing parent
 ```
+
+## Artwork
+
+* `art/banner-mod-menu-fix.png` — full resolution banner (1472×704), in the Mod Menu house style
+* `art/banner-mod-menu-fix-1280x640.png` — social preview / README size
+* `src/main/resources/assets/modmenufix/icon.png` — the 128×128 mod icon
 
 ## License
 
