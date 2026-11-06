@@ -54,7 +54,8 @@ class MissingParentsTest {
 		assertTrue(parentMap.get(phantom).isEmpty(), "child must be unlinked from the missing parent");
 		assertFalse(parentMap.values().contains(addon), "child must not stay a child of a removed parent");
 		assertTrue(rootMods.containsKey("create-addons-fly"), "child must be re-rooted so it is counted");
-		assertEquals(1, rootMods.size(), "unrelated root mods must not be added twice");
+		assertTrue(rootMods.containsKey("jei"), "unrelated root mods must be left alone");
+		assertEquals(2, rootMods.size(), "only the orphaned child is added to the root mods");
 	}
 
 	@Test
