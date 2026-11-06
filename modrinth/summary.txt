@@ -1,0 +1,1 @@
+Fixes Mod Menu on Minecraft 26.3: mods that are not installed no longer appear or count as installed mods, add-ons of a missing parent stay visible, the update checker stops crashing, and the full-width Mods button returns to both menus. Client-side.

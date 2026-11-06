@@ -1,0 +1,151 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+      - 'arena/**'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Build
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build --stacktrace
+
+      - name: Verify client-only environment
+        run: |
+          python3 - <<'PY'
+          import json, sys
+
+          fabric = json.load(open('src/main/resources/fabric.mod.json'))
+          mixins = json.load(open('src/main/resources/modmenufix.mixins.json'))
+
+          environment = fabric.get('environment')
+          entrypoints = list(fabric.get('entrypoints', {}))
+          sections = [k for k in ('mixins', 'client', 'server') if k in mixins]
+
+          print('fabric.mod.json environment:', environment)
+          print('entrypoints:', entrypoints)
+          print('mixin sections:', sections, '->', mixins.get('client'))
+
+          problems = []
+          if environment != 'client':
+              problems.append("environment must be 'client'")
+          if entrypoints != ['client']:
+              problems.append('only a client entrypoint is allowed')
+          if 'mixins' in mixins or 'server' in mixins or not mixins.get('client'):
+              problems.append('every mixin must live in the client section')
+
+          if problems:
+              print('::error::The mod is no longer client-only (' + '; '.join(problems) + '). '
+                    'The Modrinth version environment says "Client-side only", so this would be wrong metadata.')
+              sys.exit(1)
+
+          print('client-only environment confirmed')
+          PY
+
+      - name: Verify jar
+        run: |
+          set -euo pipefail
+          JAR=$(ls build/libs/modmenufix-*.jar | grep -v sources | head -n 1)
+          echo "== jar: $JAR"
+          unzip -l "$JAR"
+
+          echo "== fabric.mod.json"
+          unzip -p "$JAR" fabric.mod.json
+
+          echo "== mixin config present"
+          unzip -p "$JAR" modmenufix.mixins.json > /dev/null
+
+          echo "== mixin target classes present in the compiled mixins"
+          unzip -p "$JAR" dev/btstudio/modmenufix/mixin/ModMenuMixin.class > /dev/null
+          unzip -p "$JAR" dev/btstudio/modmenufix/mixin/FabricModMixin.class > /dev/null
+
+          echo "== injection points still exist in Mod Menu 21.0.0 (26.3)"
+          MM=$(find "$HOME/.gradle/caches" -name 'modmenu-21.0.0*.jar' | head -n 1)
+          echo "modmenu jar: $MM"
+
+          javap -p -classpath "$MM" com.terraformersmc.modmenu.ModMenu | grep -F 'onInitializeClient' \
+            || { echo '::error::ModMenu#onInitializeClient not found'; exit 1; }
+
+          javap -p -classpath "$MM" com.terraformersmc.modmenu.util.mod.fabric.FabricMod | grep -F 'setUpdateInfo' \
+            || { echo '::error::FabricMod#setUpdateInfo not found'; exit 1; }
+
+          javap -c -p -classpath "$MM" com.terraformersmc.modmenu.util.mod.fabric.FabricMod \
+            | grep -F 'com/terraformersmc/modmenu/util/mod/Mod.setChildHasUpdate' \
+            || { echo '::error::setChildHasUpdate call not found in FabricMod#setUpdateInfo'; exit 1; }
+
+          echo "== title screen config API still exists in Mod Menu 21.0.0"
+          javap -p -classpath "$MM" com.terraformersmc.modmenu.config.ModMenuConfig | grep -F 'MODS_BUTTON_STYLE' \
+            || { echo '::error::ModMenuConfig#MODS_BUTTON_STYLE not found'; exit 1; }
+
+          javap -p -classpath "$MM" com.terraformersmc.modmenu.config.ModMenuConfig | grep -F 'MODIFY_TITLE_SCREEN' \
+            || { echo '::error::ModMenuConfig#MODIFY_TITLE_SCREEN not found'; exit 1; }
+
+          javap -p -classpath "$MM" com.terraformersmc.modmenu.config.ModMenuConfig | grep -F 'GAME_MENU_BUTTON_STYLE' \
+            || { echo '::error::ModMenuConfig#GAME_MENU_BUTTON_STYLE not found'; exit 1; }
+
+          javap -p -classpath "$MM" com.terraformersmc.modmenu.config.ModMenuConfig | grep -F 'MODIFY_GAME_MENU' \
+            || { echo '::error::ModMenuConfig#MODIFY_GAME_MENU not found'; exit 1; }
+
+          javap -p -classpath "$MM" 'com.terraformersmc.modmenu.config.ModMenuConfig$TitleMenuButtonStyle' | grep -F 'CLASSIC' \
+            || { echo '::error::TitleMenuButtonStyle#CLASSIC not found'; exit 1; }
+
+          javap -p -classpath "$MM" 'com.terraformersmc.modmenu.config.ModMenuConfig$GameMenuButtonStyle' | grep -F 'INSERT' \
+            || { echo '::error::GameMenuButtonStyle#INSERT not found'; exit 1; }
+
+          javap -p -classpath "$MM" com.terraformersmc.modmenu.config.option.EnumConfigOption | grep -F 'setValue' \
+            || { echo '::error::EnumConfigOption#setValue not found'; exit 1; }
+
+          javap -p -classpath "$MM" com.terraformersmc.modmenu.config.option.BooleanConfigOption | grep -F 'setValue' \
+            || { echo '::error::BooleanConfigOption#setValue not found'; exit 1; }
+
+          echo "all injection points verified"
+
+      - name: Upload mod jar
+        uses: actions/upload-artifact@v6
+        with:
+          name: modmenufix-jar
+          path: build/libs/modmenufix-*.jar
+          if-no-files-found: error
+
+      - name: Publish jar to dist/
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          cp "$(ls build/libs/modmenufix-*.jar | grep -v sources | head -n 1)" dist/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dist
+          if git diff --cached --quiet; then
+            echo "dist/ is already up to date"
+            exit 0
+          fi
+          git commit -m "Publish built mod jar [skip ci]"
+          git push
