@@ -46,8 +46,11 @@ CI enforces this: the `Verify client-only environment` step fails the build if `
 the entrypoints, or the mixin sections ever stop being client-only, so the jar can't drift away
 from the environment answer given here.
 
-Changelog: paste the release notes from
-<https://github.com/BT-Studio-dev/ModMenu-Fix/releases/tag/v1.2.0>.
+Version type `Release`, version number `1.2.0`. Subtitle: `1.2.0 for Minecraft 26.3` (the
+wizard pre-fills `Mod Menu Fix 1.2.0`, which duplicates the project name).
+
+Changelog: `modrinth/changelog-1.2.0.md` — one file per version, kept next to this checklist so
+the Modrinth text and the GitHub release notes match.
 
 ## Tags
 
