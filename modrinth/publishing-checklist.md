@@ -25,8 +25,16 @@ Custom license URL: leave empty — MIT is in Modrinth's list, so no URL is need
 | Loaders | `Fabric` |
 | File | `dist/modmenufix-1.2.0.jar` (27,134 bytes, SHA-256 `a3d93e4e…0cfac949`) |
 
-Dependencies: **Mod Menu** — required, version `21.0.0`; **Fabric API** — required (Mod Menu
-needs it). Nothing optional.
+**Dependencies** (the wizard's Details step, `+ Add dependency`) — add exactly two:
+
+1. **Mod Menu** · version `21.0.0` · type **Required** — the jar's own metadata says
+   `modmenu >=21.0.0 <22.0.0`, because the mixins patch classes that exist in 21.x.
+2. **Fabric API** · any version · type **Required** — not a direct dependency of this mod, but
+   Mod Menu 21.0.0 declares `fabric-resource-loader-v1`, `fabric-screen-api-v1`,
+   `fabric-key-mapping-api-v1` and `fabric-lifecycle-events-v1`, so nothing works without it.
+
+Nothing optional, nothing embedded. Minecraft, the loader and Java are not added here — they
+come from the game version and loader fields.
 
 **Environment step:** choose **Client-side only** — "All functionality is done client-side and
 is compatible with vanilla servers." Do not pick "Client and server": the jar declares
