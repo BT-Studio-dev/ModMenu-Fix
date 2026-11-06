@@ -7,6 +7,8 @@
 A small **Fabric client mod for Minecraft 26.3** that fixes how [Mod Menu](https://github.com/TerraformersMC/ModMenu)
 handles **missing mods** — parent entries for mods that are not installed.
 
+**Download:** **[Releases](https://github.com/BT-Studio-dev/ModMenu-Fix/releases)** — every release carries the built jar.
+
 * Mod Menu version: **21.0.0** (the Minecraft 26.3 release)
 * Loader: Fabric Loader 0.20.1+
 * Java: 25
@@ -85,7 +87,8 @@ style in Mod Menu's options screen afterwards simply overwrites this.
 
 1. Install [Fabric Loader](https://fabricmc.net/use/) 0.20.1+ for Minecraft 26.3.
 2. Install Mod Menu 21.0.0 (and Fabric API, which Mod Menu needs).
-3. Drop `modmenufix-1.2.0.jar` into `.minecraft/mods`.
+3. Grab `modmenufix-1.2.0.jar` from [Releases](https://github.com/BT-Studio-dev/ModMenu-Fix/releases)
+   (or `dist/` in the repo) and drop it into `.minecraft/mods`.
 4. Launch the game. The log line `Mod Menu Fix 1.2.0 for Minecraft 26.3 ready` confirms it is active.
 
 ## Configuration
@@ -124,6 +127,11 @@ The project uses the non-remapping Loom plugin, because Minecraft 26.x ships uno
 
 The built jar is committed to `dist/modmenufix-1.2.0.jar` so it can be downloaded without
 running a build.
+
+`v*` tags are published by `.github/workflows/release.yml`, which refuses to publish when the
+tag does not match `mod_version`, builds and tests the mod, checks the jar contents, and then
+creates the [release](https://github.com/BT-Studio-dev/ModMenu-Fix/releases) with the jar attached.
+It can also be started by hand (`workflow_dispatch`) with the tag to publish.
 
 CI (`.github/workflows/build.yml`) runs on every push and:
 

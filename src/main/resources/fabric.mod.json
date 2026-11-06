@@ -8,9 +8,9 @@
 		"BT-Studio"
 	],
 	"contact": {
-		"homepage": "https://github.com/BT-Studio-dev/Mod-Menu-Fix",
-		"sources": "https://github.com/BT-Studio-dev/Mod-Menu-Fix",
-		"issues": "https://github.com/BT-Studio-dev/Mod-Menu-Fix/issues"
+		"homepage": "https://github.com/BT-Studio-dev/ModMenu-Fix",
+		"sources": "https://github.com/BT-Studio-dev/ModMenu-Fix",
+		"issues": "https://github.com/BT-Studio-dev/ModMenu-Fix/issues"
 	},
 	"license": "MIT",
 	"icon": "assets/modmenufix/icon.png",
