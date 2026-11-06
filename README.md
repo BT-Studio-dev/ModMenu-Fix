@@ -163,6 +163,7 @@ Copy that is ready to paste into Modrinth / CurseForge lives in `modrinth/`:
 
 * `modrinth/summary.txt` — the 250-character summary field
 * `modrinth/description.md` — the full project description (markdown)
+* `modrinth/publishing-checklist.md` — every Modrinth setting, filled in (license, version, tags, links, disclosures)
 
 ## Artwork
 
@@ -177,4 +178,5 @@ struck out (the missing mod that gets removed), and a wrench badge for the fix.
 
 ## License
 
-MIT. Mod Menu is MIT and © its authors; this project only injects into it.
+MIT — see [LICENSE](LICENSE). Mod Menu is MIT and © its authors; this project only injects
+into it and bundles none of its code.
