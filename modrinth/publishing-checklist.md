@@ -28,6 +28,12 @@ Custom license URL: leave empty — MIT is in Modrinth's list, so no URL is need
 Dependencies: **Mod Menu** — required, version `21.0.0`; **Fabric API** — required (Mod Menu
 needs it). Nothing optional.
 
+**Environment step:** choose **Client-side only** — "All functionality is done client-side and
+is compatible with vanilla servers." Do not pick "Client and server": the jar declares
+`"environment": "client"`, its entrypoint is a `ClientModInitializer`, and every mixin is in the
+`client` section of `modmenufix.mixins.json`, so Fabric never loads it on a dedicated server.
+"Ignore missing"/optional-server options do not apply.
+
 Changelog: paste the release notes from
 <https://github.com/BT-Studio-dev/ModMenu-Fix/releases/tag/v1.2.0>.
 
