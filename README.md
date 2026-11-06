@@ -157,6 +157,13 @@ src/main/java/dev/btstudio/modmenufix/
     └── FabricModMixin.java guards setUpdateInfo against a missing parent
 ```
 
+## Store listing
+
+Copy that is ready to paste into Modrinth / CurseForge lives in `modrinth/`:
+
+* `modrinth/summary.txt` — the 250-character summary field
+* `modrinth/description.md` — the full project description (markdown)
+
 ## Artwork
 
 * `art/icon-1024.png` — master icon, transparent rounded square
