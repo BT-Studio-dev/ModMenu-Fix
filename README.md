@@ -81,8 +81,17 @@ The project uses the non-remapping Loom plugin, because Minecraft 26.x ships uno
 # -> build/libs/modmenufix-1.0.0.jar
 ```
 
-CI (`.github/workflows/build.yml`) builds the jar on every push, verifies that the mixin
-injection points still exist in Mod Menu 21.0.0, and publishes the result to `dist/`.
+The built jar is committed to `dist/modmenufix-1.0.0.jar` so it can be downloaded without
+running a build.
+
+CI (`.github/workflows/build.yml`) runs on every push and:
+
+1. builds the mod and runs the unit tests in `src/test/java` (the real map surgery against
+   dummy `Mod` instances),
+2. checks with `javap` that both injection points still exist in Mod Menu 21.0.0
+   (`ModMenu#onInitializeClient`, and the `setChildHasUpdate()` call inside
+   `FabricMod#setUpdateInfo`),
+3. publishes the jar to `dist/`.
 
 ## Layout
 
