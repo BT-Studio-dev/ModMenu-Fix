@@ -71,9 +71,22 @@ Client-side is not a tag; it comes from the version's Environment answer.
 
 ## Links
 
-`Links` → **Source**: `https://github.com/BT-Studio-dev/ModMenu-Fix` ·
-**Issues**: `https://github.com/BT-Studio-dev/ModMenu-Fix/issues` ·
-Discord/Wiki: leave empty unless you have one. The description also lists both, which is fine.
+`Links` tab — two fields, both verified to return HTTP 200:
+
+| Field | Value |
+| --- | --- |
+| Issue tracker | `https://github.com/BT-Studio-dev/ModMenu-Fix/issues` |
+| Source code | `https://github.com/BT-Studio-dev/ModMenu-Fix` |
+| Wiki page | leave empty — there is no wiki |
+| Discord invite | leave empty — Modrinth only accepts invites that never expire, and there is no server for this project |
+
+Donation links: leave empty.
+
+**Before submitting, `main` must have the code.** Right now the arrow points at a branch: `main`
+still contains a one-line README and no `src/`, `LICENSE`, `.github/` or `dist/`. A reviewer who
+follows the source link will see an empty project, which is a rejection reason. Merge the pull
+request first (PR #1), then check that `github.com/BT-Studio-dev/ModMenu-Fix` shows README,
+LICENSE, src/, and the v1.2.0 release.
 
 ## Disclosures
 
